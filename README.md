@@ -1,20 +1,74 @@
-# acapella-instrumental-no-drums-classification
+# Escavating DJ Tools From Your Music Library 
+or *"Zero-shot DJ Tool classification using Speech
+& Music Activity Detection (SMAD) and pretrained CLAP embeddings"*
 
-## Classes
-classes vs musical parts: vox, melo, drums
-- acapella      => only vox         => DJ mix in new instrumental
-- instrumental  => only melo+drums  => DJ mix in new vox
-- no drums      => only melo        => DJ mix in new drums, new vox
+## WTF are DJ Tools?
+In music genres like Hip-Hop, RnB, Reggae/Dancehall and just about every Electronic/Dance/Club 
+style, DJ Tools are a selection of audio files curated to heighten the DJ's musical performance
+and creative mixing options. These files include 
+- acapella loops 
+- sound effect samples 
+- one-shots vocal samples
+- background-vocal loops
+- drums breaks 
+- melodic hooks
+- various drum beats
+- anything else to keep ish fresh!
 
-- acapella  => only vox  => DJ 2 mix in new instrumental & drums
-- melo      => only melo instruments  => DJ 2 mix in new vox & drums
-- no-vox    => only melo+drums        => DJ 2 mix in new vox
-- drums     => only drums             => intro/outros drum only passage, DJ to use
+Whether mixing live or in the studio, DJ tools facilitate the creative mixing process for 
+remixes, re-edits, re-drums, mashups, long-playing mixtapes, etc. DJ Tools are commonly sold 
+in online shops along with royalty-free sound libraries, samplepacks of loops and beats, and 
+include key signature as well as beat and tempo metadata necessary to ensure sync to the 
+DJ project master tempo.
 
-## DJ Tools
 
-Mixaloop DJ Tools are a collection of acapella loops, samples, vocal tools, breaks, hooks and beats to help make your own remixes, edits, redrums, mixtapes, mashups and party breaks sound professional!
+## Crate digging, the Amen Break and a short history of DJ tool
+Before the advent of online shops peddling every kind of sonic tool, DJs would sample sections
+of riffs from tracks in their vinyl libraries, triggering and looping these samples to elevate
+the mix. Perhaps one of the most famous examples of this is the Amen break, where the drum break
+in a song by the American Funk and Soul band The Winstons called “Amen, Brother”, was sampled
+first by Hip-Hop producers as a tool, before it caught fire and became the basis for thousands
+of songs. This very technique of sampling drum breaks became the genesis of breakbeat centric 
+genres like Hardcore, Jungle, Drum'n'Bass. The key here is that the DJ knows their music 
+library inside out and can manually excise the juiciest morsels  as tools. 
 
-Our DJ Tools include all the latest and classic audio samples in the ACIDized .wav/.mp3 format (essentially audio building blocks) that will sync to your project tempo without any work on your part. We have done the hard work for you!
+As the amount of recorded music has continued to exponentiate since the first Amen Breaks were 
+sampled, today's DJ (including the author) needs to spend a lot of dedicated time listening and 
+curating their music library. To get some extra help, I propse a tool to help identify the 
+following classes commonly found in recorded music which also function as DJ Tools. These 
+sections may include acapella (vocal) intros, beat-less outros or melodic instrumental passages 
+or section breakdowns with just the drum solo. 
 
-Our DJ Tools are the "industry standard" for novices and professionals and are suitable for all forms of electronic music production including hip hop, house, rnb and rap. 
+
+## DJ Tool Classes
+- acapella &rarr; only vocals &rarr; suitable to remix with new melo & drums
+- melo &rarr; only melodic instruments (no drums) &rarr; suitable to remix with new acapella & drums
+- drums &rarr; only drums (drum solo!) &rarr; suitable to remix with melo+acapella
+#### Useful Combinations
+- acapella+melo &rarr; vocals plus beatless instrumental accompaniment &rarr; suitable to remix with new drums
+- melo+drums &rarr; no-vox only  &rarr; Classical "instrumental", suitable to remix with new vocals
+- acapella+drums &rarr; less common but called out for completeness sake
+
+
+
+### Various kinds of DJ Tools
+Acapella Loops
+DJ Drops 
+Audio Sound FX 
+DJ Samples 
+Beat Loops
+Drum Loops
+Scratch Loops
+Scratch & Battle Tools
+Custom DJ Drops 
+DJ Tools | Mega Packs
+
+
+
+## Proposal 
+- Use MSAF and SMAD to segment and VAD song into sections
+- Harmonize those sections by combining the boundaries generated for each
+- Run CLAP classification on each segment to get a list of classes
+  - CLAP classification should be multi-task and take a long list of text descriptors
+  for each DJ Tools class. Then some logic to say that 
+- Write out json blob for each 
