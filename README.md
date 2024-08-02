@@ -1,24 +1,26 @@
-# Escavating DJ Tools From Your Music Library 
+# Escavating DJ Tools From DJ Music Libraries 
 or *"Zero-shot DJ Tool classification using Speech
 & Music Activity Detection (SMAD) and pretrained CLAP embeddings"*
 
 ## WTF are DJ Tools?
-In music genres like Hip-Hop, RnB, Reggae/Dancehall and just about every Electronic/Dance/Club 
+In genres like Hip-Hop, RnB, Reggae/Dancehall and just about every Electronic/Dance/Club 
 style, DJ Tools are a selection of audio files curated to heighten the DJ's musical performance
-and creative mixing options. These files include 
-- acapella loops 
-- sound effect samples 
-- one-shots vocal samples
-- background-vocal loops
-- drums breaks 
-- melodic hooks
-- various drum beats
-- anything else to keep ish fresh!
+and creative mixing options. These files include: 
+- Acapella loops 
+- Sound effect samples 
+- One-shots vocal samples
+- Background-vocal loops
+- Drums breaks 
+- Melodic hooks
+- DJ Drops
+- Scratch and Battle loops
+- Various drum beats
+- Anything else to keep ish fresh!
 
-Whether mixing live or in the studio, DJ tools facilitate the creative mixing process for 
+Whether mixing live or in the studio, DJ tools facilitate creative mixing options for 
 remixes, re-edits, re-drums, mashups, long-playing mixtapes, etc. DJ Tools are commonly sold 
-in online shops along with royalty-free sound libraries, samplepacks of loops and beats, and 
-include key signature as well as beat and tempo metadata necessary to ensure sync to the 
+in online shops along with royalty-free sound libraries, samplepacks of loops and beats and 
+include key signature, beat and tempo metadata where necessary to ensure sync to the 
 DJ project master tempo.
 
 
@@ -50,25 +52,16 @@ or section breakdowns with just the drum solo.
 - acapella+drums &rarr; less common but called out for completeness sake
 
 
-
-### Various kinds of DJ Tools
-Acapella Loops
-DJ Drops 
-Audio Sound FX 
-DJ Samples 
-Beat Loops
-Drum Loops
-Scratch Loops
-Scratch & Battle Tools
-Custom DJ Drops 
-DJ Tools | Mega Packs
-
-
-
 ## Proposal 
-- Use MSAF and SMAD to segment and VAD song into sections
-- Harmonize those sections by combining the boundaries generated for each
+- Use MSAF and SMAD for structural, speech and music segmentation
 - Run CLAP classification on each segment to get a list of classes
-  - CLAP classification should be multi-task and take a long list of text descriptors
-  for each DJ Tools class. Then some logic to say that 
-- Write out json blob for each 
+  - CLAP classification is multi-task, taking a long list of text descriptors for each 
+  DJ Tools class
+  - Output logic to integrate all classification time-series to decide the final output 
+  DJ Tools class for each segment, where relevant
+  - For example sections of dense mixtures (drums, vocals, instruments) are going to comprise
+  the lion's share of audio data. 
+  - We expect that DJ Tools (like w/ the Amen Break) will come from {intros, outros, brides, 
+  solos, breakdowns, drops} or any other structural segment where a full mix transitions from
+  higher to lower density in some interesting way.
+- Write out json blob for each Tool segment with `[start_time, stop_time, dj_tool_class]`
