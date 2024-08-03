@@ -1,14 +1,9 @@
 datasets
+librosa
 
 # CLAP
 git+https://github.com/huggingface/transformers
 torch
 
 # music structure
-msaf
-
-# SMAD
-smad-cli
-
-# audio io
-librosa
+# msaf
