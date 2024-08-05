@@ -7,6 +7,10 @@ import sys
 import librosa
 import soundfile as sf
 from transformers import AutoProcessor, ClapModel
+import numpy as np
+np.float_ = np.float64
+
+import msaf
 
 model = ClapModel.from_pretrained("laion/clap-htsat-unfused")
 processor = AutoProcessor.from_pretrained("laion/clap-htsat-unfused")
@@ -32,3 +36,7 @@ if __name__ == '__main__':
     clap_inference(input_text=["a drum beat", "acapella or expressively sung vocal tracks", "an instrumental passage with tonal instruments"],
                    audio_sample=sig,
                    sr=sr)
+
+    # Segment the file using the default MSAF parameters
+    boundaries, labels = msaf.process(sig)
+    print(boundaries)
