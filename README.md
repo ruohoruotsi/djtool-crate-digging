@@ -87,4 +87,11 @@ but it will depend on the mix.
     Acousticness - The higher the value the more acoustic the song is.
     Speechiness - The higher the value the more spoken word the song contains.
     Popularity - The higher the value the more popular the song is.
-    Duration - The length of the song. 
+    Duration - The length of the song.
+
+# Setup
+- Python 3.12.4
+- Main algorithmic dependency repos must be cloned and installed separately
+  - SMAD  &rarr; https://github.com/biboamy/TVSM-dataset/
+  - MSAF requires an older versions of python &rarr; Python 3.11.7
+    - [ModuleNotFoundError: No module named 'imp'](https://stackoverflow.com/questions/77274572/multiqc-modulenotfounderror-no-module-named-imp)
