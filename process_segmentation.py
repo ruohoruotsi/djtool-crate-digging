@@ -1,7 +1,9 @@
 import csv
+
 import librosa
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
+
 
 def merge_smad_output(csv_path):
     speech_windows_list, music_windows_list = [], []
@@ -73,20 +75,23 @@ def plot_windows(audiofilepath, speech_windows, music_windows, msaf_windows):
     # setup sigs
     max_val = abs(max(audio_buffer))
     for seg in speech_windows:
-        smad_speech_sig[int(seg[0]*sr):int(seg[1]*sr)] += max_val
+        smad_speech_sig[int(seg[0] * sr):int(seg[1] * sr)] += max_val
 
     for seg in music_windows:
-        smad_music_sig[int(seg[0]*sr):int(seg[1]*sr)] += max_val
-
+        smad_music_sig[int(seg[0] * sr):int(seg[1] * sr)] += max_val
 
     fig = plt.figure(figsize=(20, 16))
+    dt = 60*sr
+    ticks = np.arange(0, len_sig + dt, dt)
 
     # axes 1
     axes1 = fig.add_subplot(311)
     axes1.set_autoscale_on(True)
     axes1.autoscale_view(True, True, False)
     axes1.set_ylabel('Speech', fontsize=30)
-
+    axes1.tick_params(axis='both', which='major', labelsize=20)
+    axes1.tick_params(axis='both', which='minor', labelsize=18)
+    axes1.set_xticks(ticks, ['00:00', '1:00', '2:00', '3:00', '4:00', '5:00', '6:00'])
     t = np.arange(0, len_sig, 1)
     axes1.plot(t, audio_buffer[0:len_sig], 'b-', t, smad_speech_sig[0:len_sig], 'r-', linewidth=2)
 
@@ -95,6 +100,9 @@ def plot_windows(audiofilepath, speech_windows, music_windows, msaf_windows):
     axes2.set_autoscale_on(True)
     axes2.autoscale_view(True, True, False)
     axes2.set_ylabel('Music', fontsize=30)
+    axes2.tick_params(axis='both', which='major', labelsize=20)
+    axes2.tick_params(axis='both', which='minor', labelsize=18)
+    axes2.set_xticks(ticks, ['00:00', '1:00', '2:00', '3:00', '4:00', '5:00', '6:00'])
     axes2.plot(t, audio_buffer[0:len_sig], 'b-', t, smad_music_sig[0:len_sig], 'aquamarine')
 
     # axes 3
@@ -102,10 +110,13 @@ def plot_windows(audiofilepath, speech_windows, music_windows, msaf_windows):
     axes3.set_autoscale_on(True)
     axes3.autoscale_view(True, True, False)
     axes3.set_ylabel('MSAF', fontsize=30)
+    axes3.tick_params(axis='both', which='major', labelsize=20)
+    axes3.tick_params(axis='both', which='minor', labelsize=18)
+    axes3.set_xticks(ticks, ['00:00', '1:00', '2:00', '3:00', '4:00', '5:00', '6:00'])
     axes3.plot(t, audio_buffer[0:len_sig], 'b-')
 
     for seg in msaf_windows:
-        axes3.axvspan(int(seg[0]*sr), int(seg[1]*sr), color=np.random.rand(3), alpha=0.5)
+        axes3.axvspan(int(seg[0] * sr), int(seg[1] * sr), color=np.random.rand(3), alpha=0.5)
 
     plt.show()
     fig.tight_layout()
