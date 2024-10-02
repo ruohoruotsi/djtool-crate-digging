@@ -92,6 +92,7 @@ but it will depend on the mix.
 # Setup
 - Python 3.12.4
 - Main algorithmic dependency repos must be cloned and installed separately
-  - SMAD  &rarr; https://github.com/biboamy/TVSM-dataset/
+  - SMAD  &rarr; https://github.com/biboamy/TVSM-dataset/ requires Python `3.10` because the 
+  version requirements of {`torch`, `numpy`, etc} are only available on `3.10`
   - MSAF requires an older versions of python &rarr; Python 3.11.7
     - [ModuleNotFoundError: No module named 'imp'](https://stackoverflow.com/questions/77274572/multiqc-modulenotfounderror-no-module-named-imp)
