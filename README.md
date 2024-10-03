@@ -57,7 +57,7 @@ or section breakdowns with just the drum solo.
 
 ![png](paper_templates-master/smad_msaf.png "Example SMAD, MSAF analyses")
 
-# Existing Approaches to Music Classification 
+## Existing Approaches to Music Classification 
 Spotify (formerly Echonest) has a set of properties derived from signal-level analysis of 
 songs. This metadata are features in current playlisting algorithms. However they do not by 
 themselves, map to any useful tool. Sure acapella will have more speechiness than a full mix,
