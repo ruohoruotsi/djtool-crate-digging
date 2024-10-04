@@ -3,7 +3,8 @@ import csv
 import librosa
 import matplotlib.pyplot as plt
 import numpy as np
-
+import runez
+import os.path
 
 def merge_smad_output(csv_path):
     speech_windows_list, music_windows_list = [], []
@@ -26,7 +27,7 @@ def merge_smad_output(csv_path):
 
 def merge_smad_output_per_activation(intervals_list, min_segment_duration_ms=2000, min_silence_duration_ms=3000):
     # min_segment_duration_ms ==> discard any segments smaller than min_segment_duration_ms
-    # min_silence_duration_ms ==> if segments[1] - segments[0] < min_silence_duration merge [aaaa] 0.3 [bbbb]
+    # min_silence_duration_ms ==> if segments[1] - segments[0] < min_silence_duration merge: [aaaa] 0.3 [bbbb]
 
     results = []
     while len(intervals_list) > 0:
@@ -81,7 +82,7 @@ def plot_windows(audiofilepath, speech_windows, music_windows, msaf_windows):
         smad_music_sig[int(seg[0] * sr):int(seg[1] * sr)] += max_val
 
     fig = plt.figure(figsize=(20, 16))
-    dt = 60*sr
+    dt = 60 * sr
     ticks = np.arange(0, len_sig + dt, dt)
 
     # axes 1
@@ -122,16 +123,56 @@ def plot_windows(audiofilepath, speech_windows, music_windows, msaf_windows):
     fig.tight_layout()
 
 
+def snip_song_to_segments(windows, input_song_path, output_dir):
+    for segment in windows:
+        start, end = float(segment[0]), float(segment[1])
+        duration = end - start
+        segment_file, ext = os.path.splitext(os.path.basename(input_song_path))
+        segment_file = segment_file + "_" + str(start) + "_" + str(end) + ext
+        segment_fullpath = os.path.join(output_dir, segment_file)
+        output = runez.run(
+            "ffmpeg",
+            "-hide_banner",
+            "-loglevel",
+            "panic",
+            "-ss",
+            start,
+            "-t",
+            duration,
+            "-i",
+            "%s" % input_song_path,
+            segment_fullpath,
+            fatal=False,
+            )
+        if output is False:
+            print("OOPS ffmpeg segment file failed")
+        else:
+            print("the segment_fullpath: " + segment_fullpath)
+
+
 if __name__ == '__main__':
+    audiopath = "/Users/iroro/github/djtool-crate-digging/12_Squeeze.wav"
+    debug = False
+
+    # smad
     smad_csv_path = "/Users/iroro/github/TVSM-dataset/inference/outputs/12_Squeeze.wav.csv"
     speech_windows, music_windows = merge_smad_output(smad_csv_path)
-
+    # msaf
     msaf_csv_path = "/Users/iroro/github/msaf/examples/output.csv"
     msaf_windows = read_msaf_output(msaf_csv_path)
 
-    print("speech_windows {}".format(speech_windows))
-    print("music_windows {}".format(music_windows))
-    print("msaf_windows {}".format(msaf_windows))
+    # debug
+    if debug:
+        print("speech_windows {}".format(speech_windows))
+        print("music_windows {}".format(music_windows))
+        print("msaf_windows {}".format(msaf_windows))
 
-    audiopath = "/Users/iroro/github/acapella-instrumental-no-drums-classification/12_Squeeze.wav"
-    plot_windows(audiopath, speech_windows, music_windows, msaf_windows)
+        # plot
+        # plot_windows(audiopath, speech_windows, music_windows, msaf_windows)
+
+    # segment song
+    snip_song_to_segments(windows=msaf_windows,
+                          input_song_path=audiopath,
+                          output_dir="/Users/iroro/github/djtool-crate-digging/test_segments/")
+
+    
