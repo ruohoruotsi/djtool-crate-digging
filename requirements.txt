@@ -1,10 +1,12 @@
 datasets
 librosa
 matplotlib
+runez
 
 # CLAP
 git+https://github.com/huggingface/transformers
 torch
 
 # music structure
-# msaf
+# msaf - https://github.com/urinieto/msaf
+# smad - https://github.com/biboamy/TVSM-dataset
