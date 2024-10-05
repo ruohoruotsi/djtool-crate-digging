@@ -1,5 +1,5 @@
 # DJ Tool Retrieval From Personal Music Libraries 
-*"Zero-shot Crate Digging: DJ Tool retrieval using Speech Activity, Music Structure and CLAP embeddings"*
+*"Zero-shot [Crate Digging](https://medium.com/cuepoint/the-lost-art-of-cratedigging-4ed652643618) &rarr; DJ Tool retrieval using Speech Activity, Music Structure and CLAP embeddings"*
 
 ## What are DJ Tools?
 In genres like Hip-Hop, RnB, Reggae/Dancehall and just about every Electronic/Dance/Club 
