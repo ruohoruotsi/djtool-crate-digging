@@ -6,13 +6,18 @@ import numpy as np
 import runez
 import os.path
 
+
 def merge_smad_output(csv_path):
     speech_windows_list, music_windows_list = [], []
-    with open(csv_path, newline='') as csvfile:
-        smad_reader = csv.reader(csvfile, delimiter='\t')
+    with open(csv_path, newline="") as csvfile:
+        smad_reader = csv.reader(csvfile, delimiter="\t")
 
         for row in smad_reader:
-            start_time_s, end_time_s, smad_label = round(float(row[0]), 3), round(float(row[1]), 3), row[2]
+            start_time_s, end_time_s, smad_label = (
+                round(float(row[0]), 3),
+                round(float(row[1]), 3),
+                row[2],
+            )
             if smad_label == "s":
                 speech_windows_list.append([start_time_s, end_time_s])
             elif smad_label == "m":
@@ -25,7 +30,9 @@ def merge_smad_output(csv_path):
     return merged_speech_windows_list, merged_music_windows_list
 
 
-def merge_smad_output_per_activation(intervals_list, min_segment_duration_ms=2000, min_silence_duration_ms=3000):
+def merge_smad_output_per_activation(
+    intervals_list, min_segment_duration_ms=2000, min_silence_duration_ms=3000
+):
     # min_segment_duration_ms ==> discard any segments smaller than min_segment_duration_ms
     # min_silence_duration_ms ==> if segments[1] - segments[0] < min_silence_duration merge: [aaaa] 0.3 [bbbb]
 
@@ -37,9 +44,15 @@ def merge_smad_output_per_activation(intervals_list, min_segment_duration_ms=200
             continue
 
         # if second elements begin time - first element end time < min_silence_duration_ms
-        if intervals_list[1][0] - intervals_list[0][1] < min_silence_duration_ms / 1000.0:
+        if (
+            intervals_list[1][0] - intervals_list[0][1]
+            < min_silence_duration_ms / 1000.0
+        ):
             # set first elements begin & max of endtimes, add smad activation label {m|s}, @ intervals_list[0][02]
-            tmp = [intervals_list[0][0], max(intervals_list[0][1], intervals_list[1][1])]
+            tmp = [
+                intervals_list[0][0],
+                max(intervals_list[0][1], intervals_list[1][1]),
+            ]
             intervals_list[0] = tmp
             intervals_list.pop(1)
             continue
@@ -49,15 +62,19 @@ def merge_smad_output_per_activation(intervals_list, min_segment_duration_ms=200
         intervals_list.pop(0)
 
     # filter out too-short-segments
-    results = [x for x in results if (float(x[1]) - float(x[0])) >= min_segment_duration_ms / 1000.0]
+    results = [
+        x
+        for x in results
+        if (float(x[1]) - float(x[0])) >= min_segment_duration_ms / 1000.0
+    ]
 
     return results
 
 
 def read_msaf_output(csv_path):
     windows = []
-    with open(csv_path, newline='') as csvfile:
-        msaf_reader = csv.reader(csvfile, delimiter='\t')
+    with open(csv_path, newline="") as csvfile:
+        msaf_reader = csv.reader(csvfile, delimiter="\t")
         for row in msaf_reader:
             start_time_s, end_time_s = round(float(row[0]), 3), round(float(row[1]), 3)
             windows.append([start_time_s, end_time_s])
@@ -76,10 +93,10 @@ def plot_windows(audiofilepath, speech_windows, music_windows, msaf_windows):
     # setup sigs
     max_val = abs(max(audio_buffer))
     for seg in speech_windows:
-        smad_speech_sig[int(seg[0] * sr):int(seg[1] * sr)] += max_val
+        smad_speech_sig[int(seg[0] * sr) : int(seg[1] * sr)] += max_val
 
     for seg in music_windows:
-        smad_music_sig[int(seg[0] * sr):int(seg[1] * sr)] += max_val
+        smad_music_sig[int(seg[0] * sr) : int(seg[1] * sr)] += max_val
 
     fig = plt.figure(figsize=(20, 16))
     dt = 60 * sr
@@ -89,46 +106,59 @@ def plot_windows(audiofilepath, speech_windows, music_windows, msaf_windows):
     axes1 = fig.add_subplot(311)
     axes1.set_autoscale_on(True)
     axes1.autoscale_view(True, True, False)
-    axes1.set_ylabel('Speech', fontsize=30)
-    axes1.tick_params(axis='both', which='major', labelsize=20)
-    axes1.tick_params(axis='both', which='minor', labelsize=18)
-    axes1.set_xticks(ticks, ['00:00', '1:00', '2:00', '3:00', '4:00', '5:00', '6:00'])
+    axes1.set_ylabel("Speech", fontsize=30)
+    axes1.tick_params(axis="both", which="major", labelsize=20)
+    axes1.tick_params(axis="both", which="minor", labelsize=18)
+    axes1.set_xticks(ticks, ["00:00", "1:00", "2:00", "3:00", "4:00", "5:00", "6:00"])
     t = np.arange(0, len_sig, 1)
-    axes1.plot(t, audio_buffer[0:len_sig], 'b-', t, smad_speech_sig[0:len_sig], 'r-', linewidth=2)
+    axes1.plot(
+        t,
+        audio_buffer[0:len_sig],
+        "b-",
+        t,
+        smad_speech_sig[0:len_sig],
+        "r-",
+        linewidth=2,
+    )
 
     # axes 2
     axes2 = fig.add_subplot(313)
     axes2.set_autoscale_on(True)
     axes2.autoscale_view(True, True, False)
-    axes2.set_ylabel('Music', fontsize=30)
-    axes2.tick_params(axis='both', which='major', labelsize=20)
-    axes2.tick_params(axis='both', which='minor', labelsize=18)
-    axes2.set_xticks(ticks, ['00:00', '1:00', '2:00', '3:00', '4:00', '5:00', '6:00'])
-    axes2.plot(t, audio_buffer[0:len_sig], 'b-', t, smad_music_sig[0:len_sig], 'aquamarine')
+    axes2.set_ylabel("Music", fontsize=30)
+    axes2.tick_params(axis="both", which="major", labelsize=20)
+    axes2.tick_params(axis="both", which="minor", labelsize=18)
+    axes2.set_xticks(ticks, ["00:00", "1:00", "2:00", "3:00", "4:00", "5:00", "6:00"])
+    axes2.plot(
+        t, audio_buffer[0:len_sig], "b-", t, smad_music_sig[0:len_sig], "aquamarine"
+    )
 
     # axes 3
     axes3 = fig.add_subplot(312)
     axes3.set_autoscale_on(True)
     axes3.autoscale_view(True, True, False)
-    axes3.set_ylabel('MSAF', fontsize=30)
-    axes3.tick_params(axis='both', which='major', labelsize=20)
-    axes3.tick_params(axis='both', which='minor', labelsize=18)
-    axes3.set_xticks(ticks, ['00:00', '1:00', '2:00', '3:00', '4:00', '5:00', '6:00'])
-    axes3.plot(t, audio_buffer[0:len_sig], 'b-')
+    axes3.set_ylabel("MSAF", fontsize=30)
+    axes3.tick_params(axis="both", which="major", labelsize=20)
+    axes3.tick_params(axis="both", which="minor", labelsize=18)
+    axes3.set_xticks(ticks, ["00:00", "1:00", "2:00", "3:00", "4:00", "5:00", "6:00"])
+    axes3.plot(t, audio_buffer[0:len_sig], "b-")
 
     for seg in msaf_windows:
-        axes3.axvspan(int(seg[0] * sr), int(seg[1] * sr), color=np.random.rand(3), alpha=0.5)
+        axes3.axvspan(
+            int(seg[0] * sr), int(seg[1] * sr), color=np.random.rand(3), alpha=0.5
+        )
 
     plt.show()
     fig.tight_layout()
 
 
 def snip_song_to_segments(windows, input_song_path, output_dir):
+    index = 0
     for segment in windows:
         start, end = float(segment[0]), float(segment[1])
         duration = end - start
         segment_file, ext = os.path.splitext(os.path.basename(input_song_path))
-        segment_file = segment_file + "_" + str(start) + "_" + str(end) + ext
+        segment_file = str(index).zfill(2) + "_" + segment_file + "_" + str(start) + "_" + str(end) + ext
         segment_fullpath = os.path.join(output_dir, segment_file)
         output = runez.run(
             "ffmpeg",
@@ -143,19 +173,22 @@ def snip_song_to_segments(windows, input_song_path, output_dir):
             "%s" % input_song_path,
             segment_fullpath,
             fatal=False,
-            )
+        )
         if output is False:
             print("OOPS ffmpeg segment file failed")
         else:
             print("the segment_fullpath: " + segment_fullpath)
+        index += 1
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     audiopath = "/Users/iroro/github/djtool-crate-digging/12_Squeeze.wav"
     debug = False
 
     # smad
-    smad_csv_path = "/Users/iroro/github/TVSM-dataset/inference/outputs/12_Squeeze.wav.csv"
+    smad_csv_path = (
+        "/Users/iroro/github/TVSM-dataset/inference/outputs/12_Squeeze.wav.csv"
+    )
     speech_windows, music_windows = merge_smad_output(smad_csv_path)
     # msaf
     msaf_csv_path = "/Users/iroro/github/msaf/examples/output.csv"
@@ -171,8 +204,7 @@ if __name__ == '__main__':
         # plot_windows(audiopath, speech_windows, music_windows, msaf_windows)
 
     # segment song
-    snip_song_to_segments(windows=msaf_windows,
-                          input_song_path=audiopath,
-                          output_dir="/Users/iroro/github/djtool-crate-digging/test_segments/")
-
-    
+    segment_fullpath = "/Users/iroro/github/djtool-crate-digging/test_segments/"
+    snip_song_to_segments(
+        windows=msaf_windows, input_song_path=audiopath, output_dir=segment_fullpath
+    )

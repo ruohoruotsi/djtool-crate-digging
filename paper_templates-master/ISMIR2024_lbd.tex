@@ -39,13 +39,14 @@
 
 \usepackage{lineno}
 \linenumbers
-
+\usepackage{booktabs}
+\usepackage{bm}
 
 % \onecolumn
 % Title. Please use IEEE-compliant title case when specifying the title here,
 % as it has implications for the copyright notice
 % ------
-\title{Zero-shot Crate Digging $\rightarrow$ DJ Tool retrieval using \{Speech, Music\} Activity and CLAP embeddings}
+\title{Zero-shot Crate Digging $\rightarrow$ DJ Tool retrieval using Speech Activity, Music Structure and CLAP embeddings}
 
 % Note: Please do NOT use \thanks or a \footnote in any of the author markup
 
@@ -96,11 +97,12 @@
 \maketitle
 %
 \begin{abstract}
-In genres like Hip-Hop, RnB, Reggae, Dancehall and just about every Electronic/Dance/Club style, DJ tools are a special set of audio files curated to heighten the DJ's musical performance and creative mixing choices. In this work we demonstrate an approach to discovering DJ Tools in personal music collections. Given a large set of audio files in a personal or DJ music library, we utilize zero-shot audio classification on audio segments created from music structure boundary analysis and speech and music activity. The system offer a novel way for DJs to rediscover tools in their personal music collections.
+In genres like Hip-Hop, RnB, Reggae, Dancehall and just about every Electronic/Dance/Club style, DJ tools are a special set of audio files curated to heighten the DJ's musical performance and creative mixing choices. In this work we demonstrate an approach to discovering DJ tools in personal music collections. Leveraging open-source libraries for speech/music activity, music boundary analysis and a Contrastive Language-Audio Pretraining (CLAP) model for zero-shot audio classification, we demonstrate a novel system designed to retrieve (or rediscover) compelling DJ tools for use live or in the studio.
  \end{abstract}
+
 %
 \section{Introduction}\label{sec:introduction}
-Whether mixing live or in the studio, DJ tools facilitate creative mixing options for remixes, re-edits, re-drums, mashups, long-playing mixtapes, etc. Tools vary by genre and era, but are generally short, simplified musical phrases retrieved from existing music with the intention to reuse in a DJ performance. These musical phrases range from sound effects to acapella loops to purely instrumental passages, solo percussion or drum break to an entire verse or bridge of song. For example a DJ might trigger an acapella loop or long sound effect while mixing a transition from SongA $\rightarrow$ SongB. DJ Tools are commonly sold in online shops along with royalty-free sound libraries, samplepacks of loops and beats. Most tools include key signature, beat and tempo metadata where necessary to ensure sync to the DJ project master tempo.
+When DJs are mixing music, or remixing specific songs, creating special edits, re-drums, mashups or just long-playing mixtapes, DJ tools provide a host of creative possibilities. Tools vary by genre and era, but are generally short, simplified musical phrases retrieved from existing music with the intention to reuse in a DJ performance. These musical phrases range from sound effects to acapella loops to purely instrumental passages, solo percussion or drum break to an entire verse or bridge of song. For example a DJ might trigger an acapella loop or long sound effect while mixing a transition from SongA $\rightarrow$ SongB. DJ Tools are commonly sold in online shops along with royalty-free sound libraries, sample packs of loops and beats. Most tools include key signature, beat and tempo metadata where necessary to ensure sync to the DJ project master tempo.
 
 \subsection{Crate digging \& a short history of DJ tool}\label{sec:history}
 
@@ -109,7 +111,7 @@ Before the advent of online shops trading sonic tool, DJs and producers were kno
 \subsection{Musical structure, speech activity and zero-shot classification}\label{sec:djtool_classes}
 DJ tools naturally occur at moments in a song where there is a transition to a simpler, less-dense mix. Ergo, we leverage the music structural analysis framework (MSAF) boundary detection algorithms to supply approximate time-offsets of structural progressions \cite{nieto2016systematic}. Next, we employ a speech and music activity detector (SMAD)\cite{Hung2022} to further refine which passages to gather for classification.
 
-For DJ-tool classification we engage the zero-shot capabilities of a Contrastive Language-Audio Pretraining (CLAP) model \cite{elizalde2022claplearningaudioconcepts}. Given an audio segment $X^{a}$ and a list of text descriptions of different DJ tool classes \{$X^{t}_{1},...,X^{t}_{M}$\}, we use CLAP's pretrained \{audio, text\} encoders and their projection layers to compute CLAP embeddings $E^a$ and $E^t_i$. The classification logits $D_i$ can be computed as magntidue of the cosine similarity between the audio segment embedding and \textit{each} text embedding.
+For DJ-tool classification we engage the zero-shot capabilities of a Contrastive Language-Audio Pretraining (CLAP) model \cite{elizalde2022claplearningaudioconcepts}. Given an audio segment $X^{a}$ and a list of text descriptions of different DJ tool classes \{$X^{t}_{1},...,X^{t}_{M}$\}, we use CLAP's pretrained \{audio, text\} encoders and their projection layers to compute CLAP embeddings $E^a$ and $E^t_i$. The classification logits $D_i$ can be computed as magnitude of the cosine similarity between the audio segment embedding and \textit{each} text embedding.
 
 \begin{equation}
 \begin{matrix}
@@ -133,15 +135,10 @@ For DJ-tool classification we engage the zero-shot capabilities of a Contrastive
 
 \section{The System}\label{sec:system}
 
-The system is based on fully open-source Python tools. Firstly, MSAF\footnote{https://github.com/urinieto/msaf} and SMAD\footnote{https://github.com/biboamy/TVSM-dataset/tree/master} are run independently to generate raw activities and structural boundaries saved as CSV files. Next, these are post-processed to yield two lists of time ranges or ``time windows'' and a list of boundary-times. In principle, we can just use the boundary times to segment the song, however if we use the speech onset times from SMAD, we can get a more accurate onset time for the region. Figure \ref{fig:msafsmadplot} shows the relationship between the boundaries and the speech activity. 
-
-Next, for zero-shot classification we use the LAION version of CLAP hosted on Huggingface\footnote{https://huggingface.co/laion/clap-htsat-unfused}
-
-The source code\footnote{https://github.com/ruohoruotsi/djtool-crate-digging} is fully open source, relying only on open-source libraries and models. Interested users can use the main Python file to retreive DJ Tools in their personal music libraries.
-
+The system, its libraries, data and model dependencies, are all fully open-source software (OSS) written in Python\footnote{https://github.com/ruohoruotsi/djtool-crate-digging}. Firstly, we run MSAF\footnote{https://github.com/urinieto/msaf} and SMAD\footnote{https://github.com/biboamy/TVSM-dataset/tree/master} to generate raw activities and structural boundaries, saved as CSV files. Next, these are post-processed to yield lists of time ranges and boundary-times. In principle, we can just use the boundary times to segment the song, however using speech activity onset times delivers more precise slices. Figure \ref{fig:msafsmadplot} shows the relationship between the boundaries and the speech activity for one song. For zero-shot classification, we utilize the LAION version of CLAP\footnote{https://huggingface.co/laion/clap-htsat-unfused} hosted on Huggingface\cite{WuClap2023}. Here, we manually create a list of descriptive text strings, requiring some creativity and trial-and-error. A few abbreviated DJ tool descriptions are listed in Table \ref{tab:djtool_texts}.
 
 \subsection{Algorithm}\label{subsec:algo}
-Below we outline how we go about procesing all files in a music library. Note the term ``window''  below refers to a tuple with the following temporal attributes $\rightarrow$ \code{start\_time, end\_time, label}
+Below we outline how we go about processing all files in a music library. $W^{s}, W^{m}$ are ``windows'' or time ranges specified with a \code{start\_time, end\_time, label}
 
 \begin{algorithm}
     \caption{Zero-shot Crate Digging}\label{combo_algo}
@@ -157,55 +154,58 @@ Below we outline how we go about procesing all files in a music library. Note th
 		    \BlankLine
             \For{$j := $1 to $N$}{
                 $E^{a}_j \gets AudioEncoder(X^a_j)$ \\
-                $D_{j_i} \gets Similarity(E^a_j, E^{t}_{i})$ \\
-                Bucket each $D_{j_i}$ into one of $M$ classes \\
-                Save audio file \& predicted class metadata \\
-                \BlankLine
+                $\vec{D} \gets Similarity(E^a_j, \{E^{t}_{1},...,E^{t}_{M}\})$ \\
+                $\vec{\bm{z}} \gets softmax(\vec{D})$ \\
+                Store predicted class, the $\mathop{\arg \max}$ of $\vec{\bm{z}}$\\
             }
         }
 \end{algorithm}
 
-\subsection{Results or Experience using the system}
+\subsection{Evaluation and discussion of limitations}
+To evaluate the system, we generated classifications from the author's DJ library. Overall, the system performs well for vocal and percussive tool classes with prediction probabilities > $0.75$. However, shorter burstier sound effects, drops and genre-specific tools failed to be identified consistently. As expected, the system is sensitive to the \textit{language} and we observe that adding broad or generic terms or entire genres (e.g. ``hip-hop, funk, drum and bass'') to a single class description led to markedly worse results across all classes. For best results, the classes should not overlap in their description, but can contain mixed elements. For example our best performing vocal description was ``acapella, expressively sung human vocal with background instrumental music tracks''. 
+
+DJ tool durations are typically at the motif or phrase level, i.e. longer than a single utterance, note or beat but shorter than an entire verse or chorus. The challenge before us was to determine optimal segmentation for CLAP classification, while slicing the song appropriately for use by DJs. So we ran an experiment, using three 23s segments from groundtruth-ed songs \cite{MSS00401998, 91vocals2024}, tracking how the predicted class probabilites varied as we progressively reduced the segment duration to 3s.  We observe that for tools with just one class \{\textit{02\_drums.wav}, featuring \textit{03\_vocalhook.wav}\} breakbeats and purely sung vocals respectively, that predictions are stable even at short durations. Whereas for \textit{01\_vox.wav} which includes vocals and stuttery vocal effects, its predictions are more sensitive to local features.
 
 \begin{table}
  \begin{center}
- \begin{tabular}{|l|l|}
-  \hline
-  DJ Tool class & Example description text prompt \\
-  \hline
+ \begin{tabular}{ll}
+  \midrule
+  \textbf{DJ Tool class} & \textbf{Example text description} \\
+  \midrule
 	Acapella loops & ``expressively sung vocal tracks''  \\
-	Sound effects &  ``siren, riser sound effects''\\
+	Sound effects &  ``siren, riser sound effects, whoosh''\\
 	Drums breaks  & ``drum beat, drum solo, breakbeat''  \\
-	Melodic hooks & ``solo guitar, piano melody''  \\
-	DJ Drops & ``Massive EDM drop''  \\
-	Battle tracks & ``vinyl scratch loop, turnatablist''   \\
-	... & ... \\
-  \hline
+	Melodic hooks & ``strings, solo guitar, piano melodies''  \\
+	DJ Drops & ``a high energy, massive EDM drop''  \\
+	Battle tracks & ``vinyl scratch loop, turnatablism''   \\
  \end{tabular}
 \end{center}
- \caption{In practise, for each class $C_i$, there are host of valid text-prompts. There is also a bit or art to capture the textual essence of each class}
- \label{tab:example}
+ \caption{In practise, text descriptions are more tortuous}
+ \label{tab:djtool_texts}
 \end{table}
 
+\begin{table}
+ \begin{center}
+ \begin{tabular}{llllll}
+    \toprule
+ 	  Sliced segment & 23s & 18s & 13s & 8s & 3s \\
+ 	\midrule
+	\textit{01\_vox.wav} & 1. & 1. & 0.99 & 0.25 & 0.01 \\
+	\textit{02\_drums.wav} & 1. & 1. & 1. & 1. & 1. \\
+	\textit{03\_vocalhook.wav} & 1. & 1. & 1. & 0.99 & 0.96\\
+	\end{tabular}
+\end{center}
+ \caption{Ground-truth class prediction, varying segment duration}
+ \label{tab:vox_class_ablation}
+\end{table}
 
 \section{Related Work}
-There is not much existing work within the community relevant to DJs. The few studies that we could find focused on Pop or EDM genres, which may have less of a crate-digging culture. These works focused on the challenges of ideal sequencing of songs and inter-song transitions with an eye toward the fully automatic DJ \cite{kim2017automatic, huang2017djnet, bittner2017automatic}.
+There is not much existing work within the community relevant to DJs. The few studies that we found focused on Pop or EDM genres, which have much less of a crate-digging history. These works focused on the challenges of ideal sequencing of songs and inter-song transitions, with an eye toward the fully automatic DJ \cite{kim2017automatic, huang2017djnet, bittner2017automatic}.
 
-In a recent work from 2023, DJ STRUCTFREAK, the authors tackle the task of carefully choosing suitable ``mix points'' \textit{within} a song to generate smooth, aesthetic transitions \cite{kim2023dj}. Similar to this work, they employ structural analysis and beat and frame-level embeddings \cite{kim2023all}. 
-
-
-% fully automated system that generates DJ mixes from an arbitrary pool of audio tracks. 
-
-
-
-
+In a recent work, DJ StructFreak (2023), the authors tackle the task of carefully choosing suitable ``mix points'' \textit{within} a song, to generate smooth pleasing transitions \cite{kim2023dj}. Similar to our work, they employ music structural analysis and use embeddings from a pretrained model \cite{kim2023all}. 
 
 \section{Future Work}
-
-In this work, we demonstrate a simple tool leveraging 3 open-source audio classification libraries, operating on large, personal music libraries for the specific task of retrieval of relevant, DJ-centric audio files for use in live DJ performance. 
-
-Future work includes improving the fidelity of the boundary detection algorithms and exploring a more modern structural segmentation approach like \cite{kim2023all}. If there is enough interest to turn DJ tool retrieval into a proper MIR task, then the first order of future work will be a labeled evaluation dataset. Finally, a front-end UI would be useful for strictly non-programmer Deejays.
-
+There is much work to be done to develop the system into a tool for non-programmer disc jockeys. Future algorithmic work includes improving the fidelity of the boundary detection algorithms and evaluating recent structural segmentation approaches\cite{kim2023all}. Finally, if there is enough interest to turn DJ tool retrieval into a proper MIR task, then we will need labeled datasets. 
 % For bibtex users:
 \bibliography{ISMIRtemplate}
 
