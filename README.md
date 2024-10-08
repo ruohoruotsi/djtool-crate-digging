@@ -78,7 +78,7 @@ but it will depend on the mix.
     Popularity - The higher the value the more popular the song is.
     Duration - The length of the song.
 
-# Developer Setup
+# (WIP 🚧) Developer Setup
 - `Python 3.12.4`
 - Main algorithmic dependency repos must be cloned and installed separately
   - SMAD &rarr; requires `Python 3.10` because the 
