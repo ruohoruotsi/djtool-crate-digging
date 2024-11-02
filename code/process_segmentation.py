@@ -1,10 +1,13 @@
+import argparse
 import csv
+import glob
+import os.path
+from pathlib import Path
 
 import librosa
 import matplotlib.pyplot as plt
 import numpy as np
 import runez
-import os.path
 
 
 def merge_smad_output(csv_path):
@@ -181,15 +184,14 @@ def snip_song_to_segments(windows, input_song_path, output_dir):
         index += 1
 
 
-if __name__ == "__main__":
+def test_main():
     audiopath = "/Users/iroro/github/djtool-crate-digging/12_Squeeze.wav"
     debug = False
 
     # smad
-    smad_csv_path = (
-        "/Users/iroro/github/TVSM-dataset/inference/outputs/12_Squeeze.wav.csv"
-    )
+    smad_csv_path = ("/Users/iroro/github/TVSM-dataset/inference/outputs/12_Squeeze.wav.csv")
     speech_windows, music_windows = merge_smad_output(smad_csv_path)
+
     # msaf
     msaf_csv_path = "/Users/iroro/github/msaf/examples/output.csv"
     msaf_windows = read_msaf_output(msaf_csv_path)
@@ -208,3 +210,26 @@ if __name__ == "__main__":
     snip_song_to_segments(
         windows=msaf_windows, input_song_path=audiopath, output_dir=segment_fullpath
     )
+
+
+if __name__ == "__main__":
+
+    parser = argparse.ArgumentParser(description="input audio file dir")
+    parser.add_argument(dest='input_segments_dir')
+    args = parser.parse_args()
+
+    wav_pattern = str(Path(__file__).parent.joinpath(args.input_segments_dir)) + "/*/*.csv"
+    csv_file_list = glob.glob(wav_pattern, recursive=True)
+    csv_file_list.sort()
+
+    segment_fullpath = "/Users/iroro/Desktop/IO_DJTools_MusicLibrary/test_segments"
+    for csv_file_path in csv_file_list:
+        msaf_windows = read_msaf_output(csv_file_path)
+        audiopath_bits = csv_file_path.split(".")[:-2]
+        audiopath_bits.append("wav")
+        audiopath = ".".join(audiopath_bits)
+        print("path: {} is legit {}".format(audiopath, os.path.isfile(audiopath)))
+        if os.path.isfile(audiopath):
+            snip_song_to_segments(
+                windows=msaf_windows, input_song_path=audiopath, output_dir=segment_fullpath
+            )

@@ -4,6 +4,7 @@ Quick experiments to evaluate the CLAP & SMAD classifications
 import argparse
 import glob
 import os.path
+import shutil
 
 import librosa
 import numpy as np
@@ -35,6 +36,17 @@ djtool_description_list = [
     "a high energy, high tension, climactic, massive EDM drop"
 ]
 
+
+djtool_class_paths= [
+    "/Users/iroro/github/djtool-crate-digging/predicted_audio/acapella/",
+    "/Users/iroro/github/djtool-crate-digging/predicted_audio/instrumentals/",
+    "/Users/iroro/github/djtool-crate-digging/predicted_audio/drums/",
+    "/Users/iroro/github/djtool-crate-digging/predicted_audio/beatbox/",
+    "/Users/iroro/github/djtool-crate-digging/predicted_audio/fx/",
+    "/Users/iroro/github/djtool-crate-digging/predicted_audio/vinyl_fx/",
+    "/Users/iroro/github/djtool-crate-digging/predicted_audio/drops/"
+]
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="input audio file dir")
     parser.add_argument(dest='input_segments_dir')
@@ -49,11 +61,17 @@ if __name__ == '__main__':
         # audio_segment = audio_segment[:sr*23]
 
         duration = len(audio_segment) / sr
-        print("duration {}".format(duration))
+        # print("duration {}".format(duration))
         if duration < 3:
             print("{} is too short\n".format(seg_file))
             continue
 
         # iterate over sufficiently long segments
         probs = clap_inference(input_text=djtool_description_list, audio_sample=audio_segment, sr=sr)
-        print("{}:      {}\n".format(os.path.basename(seg_file), np.round(probs, 2)))
+        print("{}: \n{}\n".format(os.path.basename(seg_file), np.round(probs, 2)))
+        argmax_class_index = np.argmax(probs)
+
+        if probs[argmax_class_index] > 0.1:
+            destination_dir = djtool_class_paths[argmax_class_index]
+            shutil.copy(seg_file, os.path.join(destination_dir, os.path.basename(seg_file)))
+
