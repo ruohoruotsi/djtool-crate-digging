@@ -73,10 +73,10 @@
 %					BOTTOM LEFT SECTION
 					\begin{myblock}{Software Demo Implementation}
 					
-					The DJ-tool classification system and its dependencies are fully open-source software (OSS) written in Python. Firstly, we run MSAF\footnote{https://github.com/urinieto/msaf} and SMAD\footnote{https://github.com/biboamy/TVSM-dataset/tree/master} to generate raw activities and structural boundaries, saved as CSV files\cite{Hung2022, nieto2016systematic}. Next, these are post-processed to yield lists of segment time ranges. Figure \ref{fig:msafsmadplot} shows the relationship between the boundaries and the speech activity for one song. 
+					The DJ-tool classification system and its dependencies are fully open-source software (OSS) written in Python. Firstly, we run MSAF\footnote{https://github.com/urinieto/msaf} and SMAD\footnote{https://github.com/biboamy/TVSM-dataset/tree/master} to generate raw activities and structural boundaries, saved as CSV files \cite{Hung2022, nieto2016systematic}. Next, these are post-processed to yield lists of segment time ranges. Figure \ref{fig:msafsmadplot} shows the relationship between the boundaries and the speech activity for one song. 
 					
 					\vspace{1.2em}
-					For zero-shot classification, we utilize the LAION version of CLAP\footnote{https://huggingface.co/laion/clap-htsat-unfused} hosted on Huggingface\cite{elizalde2022claplearningaudioconcepts, WuClap2023}. Finally, we manually create a list of descriptive text strings for each class, as listed in Table \ref{tab:djtool_texts}.
+					For zero-shot classification, we utilize the LAION version of CLAP\footnote{https://huggingface.co/laion/clap-htsat-unfused} hosted on Huggingface \cite{elizalde2022claplearningaudioconcepts, WuClap2023}. Finally, we manually create a list of descriptive text strings for each class, as listed in Table \ref{tab:djtool_texts}.
 					\vspace{1.2em}
 
 			 \begin{algorithm}[H]
@@ -164,10 +164,10 @@
 
 						\begin{itemize}
 							\item Vocal and drums tool classes perform better than short, burstier sound effects 							
-							\item Performance is sensitive to \textit{precise language}. Adding generic terms or entire genres (e.g. ``hip-hop, drum and bass'') to a class description led to markedly worse results overall.
+							\item Performance is sensitive to \textit{precise language}. Adding generic terms or entire genres (e.g. ``hip-hop, drum and bass'') to a class description led to markedly worse results overall
 							\item For best results, the class descriptions should not overlap
-							\item One challenge was to determine optimal segmentation for CLAP classification, while slicing the song appropriately for use by DJs.
-							\item Playing with the system and making music with the retreived DJ tools led to unexpectedly delightful mixing sessions.
+							\item One challenge was to determine the optimal segmentation for CLAP classification, while slicing the song appropriately for use by DJs.
+							\item Playing with the system and making music with the retreived DJ tools led to unexpectedly delightful mixing sessions
 						\end{itemize}
 	\end{myblock}\vfill
 					
