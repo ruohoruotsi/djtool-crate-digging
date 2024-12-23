@@ -55,7 +55,7 @@ or section breakdowns with just the drum solo.
   higher to lower density in some interesting way.
 - Write out json blob for each Tool segment with `[start_time, stop_time, dj_tool_class]`
 
-![png](paper_templates-master/smad_msaf.png "Example SMAD, MSAF analyses")
+![png](lbd_paper_latex/smad_msaf.png "Example SMAD, MSAF analyses")
 
 ## Existing Approaches to Music Classification 
 Spotify (formerly Echonest) has a set of properties derived from signal-level analysis of 
