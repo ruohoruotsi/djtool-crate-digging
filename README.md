@@ -85,3 +85,10 @@ but it will depend on the mix.
   version requirements of {`torch`, `numpy`, etc} are only available on `3.10`
   - MSAF &rarr; requires an older version due to this error [ModuleNotFoundError: No module named 'imp'](https://stackoverflow.com/questions/77274572/multiqc-modulenotfounderror-no-module-named-imp). 
   I tested with `Python 3.11.7`
+
+# ISMIR 2024 Late Breaking Demo feedback & Avenues for future work
+- Try averaging the embeddings of each of the short comma-separated "text blobs". This aligns better with the CLAP training captions. We may not need a softmax post-facto then
+- Do segmentation in the embedding space. MSAF should allow you to BYO-Segmentation-Algorithm. Are there other better/more-modern segmentation algorithms?
+- Use MIRFLEX, we need to have all parts of the system in a singular repos vs the current scattered-across-multiple-repos ting
+- Build a proper evaluation dataset
+- Are there better embedding systems to use other than CLAP?
