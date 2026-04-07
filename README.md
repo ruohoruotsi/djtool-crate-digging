@@ -164,22 +164,42 @@ pytest --cov=djtool
 
 ## Project Structure
 
-```
-src/djtool/
-  cli.py                  # Click CLI entry point
-  config.py               # Dataclass configuration
-  pipeline.py             # End-to-end orchestrator
-  segmentation/
-    msaf_adapter.py       # MSAF structural segmentation wrapper
-    smad_adapter.py       # TVSM speech/music detection wrapper
-    fusion.py             # MSAF + SMAD boundary fusion (Algorithm 1)
-  classification/
-    clap.py               # CLAP zero-shot classification
-    prompts.py            # DJ tool class definitions and text prompts
-  audio/
-    io.py                 # Audio loading and segment extraction
-    export.py             # Output writers (folders, CSV, JSON)
-  _vendor/tvsm/           # Vendored TVSM inference code (CRNN + PCEN)
+```bash
+├── src
+│   └── djtool
+│       ├── __init__.py
+│       ├── cli.py                    # Click CLI entry point
+│       ├── config.py                 # Dataclass configuration
+│       ├── pipeline.py               # End-to-end orchestrator
+│       ├── segmentation
+│       │   ├── msaf_adapter.py       # MSAF structural segmentation wrapper
+│       │   ├── smad_adapter.py       # TVSM speech/music detection wrapper
+│       │   └── fusion.py             # MSAF + SMAD boundary fusion (Algorithm 1)
+│       ├── classification
+│       │   ├── clap.py               # CLAP zero-shot classification
+│       │   └── prompts.py            # DJ tool class definitions and text prompts
+│       ├── audio
+│       │   ├── io.py                 # Audio loading and segment extraction
+│       │   └── export.py             # Output writers (folders, CSV, JSON)
+│       └── _vendor
+│           └── tvsm                  # Vendored TVSM inference code
+│               ├── crnn.py           # CRNN model architecture
+│               ├── pcen.py           # PCEN normalization
+│               └── detector.py       # SMDetector inference wrapper
+├── tests
+│   ├── test_fusion.py
+│   ├── test_prompts.py
+│   └── test_smad_adapter.py
+├── models                            # TVSM checkpoint(s)
+├── legacy                            # Original prototype code and ISMIR paper
+│   ├── code
+│   ├── lbd_paper_latex
+│   └── lbd_poster_latex
+├── pyproject.toml
+├── PLAN.md
+├── README.md
+├── LICENSE
+└── .gitignore
 ```
 
 ## Background
