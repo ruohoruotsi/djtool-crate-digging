@@ -1,0 +1,61 @@
+[build-system]
+requires = ["setuptools>=68.0", "setuptools-scm>=8.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "djtool"
+version = "0.1.0"
+description = "Zero-shot DJ tool retrieval from personal music libraries using music structure analysis, speech/music detection, and CLAP embeddings"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.11"
+authors = [
+    {name = "Iroro Orife"},
+]
+keywords = ["audio", "music", "dj", "segmentation", "classification", "mir"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Multimedia :: Sound/Audio :: Analysis",
+]
+dependencies = [
+    "click>=8.0",
+    "librosa>=0.10.0",
+    "msaf @ git+https://github.com/urinieto/msaf.git@main",
+    "numpy>=1.24",
+    "torch>=2.0",
+    "torchaudio>=2.0",
+    "transformers>=4.30",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "pytest-cov",
+    "ruff",
+]
+
+[project.scripts]
+djtool-crate-digga = "djtool.cli:main"
+
+[project.urls]
+Repository = "https://github.com/ruohoruotsi/djtool-crate-digging"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "W"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
